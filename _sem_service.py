@@ -48,3 +48,6 @@ class ShenMaSemService(object):
     async def get_keyword(self, request_body=None):
         return await self.__execute(service="keyword", method="getKeywordByKeywordId", request_body=request_body)
 
+    async def get_keyword_quality(self, request_body=None):
+        return await self.__execute(service="keyword", method="getKeyword10Quality", request_body=request_body)
+

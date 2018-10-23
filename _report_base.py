@@ -30,7 +30,7 @@ class ReportBase(object):
         logger.info("report_id is : %s" % report_id)
 
         retry = 0
-        retry_times = 3
+        retry_times = 5
         retry_interval = 5 #seconds
         while retry < retry_times:
             report_state_res = await sem_service.get_report_state(report_param)
@@ -87,6 +87,8 @@ class ReportBase(object):
 
     @staticmethod
     def convert_sem_data_to_pt(fres, f_source, f_company_id, f_email, fmap, f_account):
+        fres['设备'] = "移动"
+        return fres
         '''
             注意：
             此处只是数据源的原始字段转换为ptming的入库字段，不做字段特殊值处理
@@ -97,6 +99,8 @@ class ReportBase(object):
         fres['f_company_id'] = f_company_id
         fres['f_email'] = f_email
         fres['f_account'] = f_account
+        fres['f_type'] = "移动"
+        #report_data['f_account_id'] = f_account_id
 
         cols = [col for col in fres]
         new_cols = []

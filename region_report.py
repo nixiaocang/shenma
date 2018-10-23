@@ -2,13 +2,10 @@ import asyncio
 import logging
 import logging.config
 import time
-import json
 import datetime
-import pandas as pd
 from _sem_service import ShenMaSemService
 from _report_base import ReportBase
-import warnings
-warnings.filterwarnings('ignore')
+import traceback
 
 logger = logging.getLogger()
 
@@ -20,20 +17,23 @@ fmap = {
         "f_source": "f_source",
         "f_company_id": "f_company_id",
         "f_email": "f_email",
-        "时间": "f_date",
         "f_account": "f_account",
         "f_account_id": "f_account_id",
-        "keywordId": "f_keyword_id",
+        '时间': "f_date",
+        "推广计划": "f_campaign",
+        "推广单元": "f_campaign_group",
+        "关键词": "f_region",
+        "消费": "f_cost",
+        "展现量": "f_impression_count",
+        "点击量": "f_click_count",
+        "平均排名": "f_region_avg_billing",
+        "关键词ID": "f_region_id",
         "推广计划ID": "f_campaign_id",
-        "adgroupId": "f_set_id",
-        "keyword": "f_keyword",
-        "price": "f_keyword_offer_price",
-        "destinationUrl": "f_pc_url",
-        "matchType": "f_matched_type",
+        "推广单元ID": "f_company_group_id"
     }
 
 
-class KeywordInfoReport(ReportBase):
+class RegionReport(ReportBase):
     def __init__(self, request_params):
         self.f_account = request_params.get("account", None)
         self.f_password = request_params.get("password", None)
@@ -52,12 +52,12 @@ class KeywordInfoReport(ReportBase):
         try:
             if self.f_account is None \
                     or self.f_password is None \
+                    or self.f_token is None \
                     or self.f_email is None \
                     or self.f_company_id is None \
-                    or self.f_source is None \
-                    or self.f_token is None:
+                    or self.f_source is None:
                 res_code = 2100
-                res_message = "Failed to get_report_data, account or password or token is  missed"
+                res_message = "Failed to get_report_data, account or password or token is missed"
             else:
                 sem_service = ShenMaSemService(self.f_account, self.f_password, self.f_token)
 
@@ -69,16 +69,17 @@ class KeywordInfoReport(ReportBase):
                     start_date = self.f_from_date
                     end_date = self.f_to_date
                 request_body = {
-                        "performanceData": ["cost", "cpc", "click", "impression",     "ctr", "rank"],
+                        "performanceData": ["cost", "click", "impression"],
                         "startDate": start_date,
                         "endDate": end_date,
                         "idOnly": False,
-                        "reportType": 14,
+                        "reportType": 5,
                         "format": 2,
                         "unitOfTime": 5
-                        }
+                                    }
                 res_code, res_message = await self._get_and_save_report_data_to_db(sem_service, request_body)
         except Exception as e:
+            traceback.print_exc()
             res_code = 2101
             res_message = ("Exception is thrown during get_report_data : %s" % str(e))
         finally:
@@ -95,54 +96,20 @@ class KeywordInfoReport(ReportBase):
         '''
         start = time.time()
         get_report_data_res = await ReportBase.get_report_data(sem_service, request_body)
-        df = get_report_data_res.get("report_data", None)
-        dates = pd.date_range(self.f_from_date, self.f_to_date)
-        data = []
-        for date in dates:
-            date = str(date)[:10]
-            tdf = df[df['时间']==date]
-            ids = tdf["关键词ID"].tolist()
-            ids = list(set(ids))
-            for i in range(0, len(ids), 5000):
-                request_body = {
-                        "keywordIds":ids[i:i+5000]
-                    }
-                res = await sem_service.get_keyword(request_body)
-                res = json.loads(res)
-                if res["header"]["status"] != 0:
-                    raise Exception("获取keyword info失败, return :%s" % json.dumps(res))
-                sub_data = res["body"]["keywordTypes"]
-                request_body = {
-                        "ids":ids[i:i+5000],
-                        "type":7
-                        }
-                qres = await sem_service.get_keyword_quality(request_body)
-                qres = json.loads(qres)
-                if qres["header"]["status"] != 0:
-                    raise Exception("获取keyword info失败, return :%s" % json.dumps(qres))
-                sub_qualities = qres["body"]["keyword10Quality"]
-                qbag = {}
-                for item in sub_qualities:
-                    qbag[item["id"]] = item["quality"]
-                for sub in sub_data:
-                    sub["date"] = date
-                    sub["quality"] = qbag.get(sub["keywordId"], 0)
-                data += sub_data
         cost = time.time()-start
-        print("keyword info耗时==> %s s" % cost)
+        print("region report耗时==> %s s" % cost)
         '''
             计算获取数据用时
         '''
+        report_data_length = get_report_data_res.get("length", None)
+        report_data = get_report_data_res.get("report_data", None)
+        retry_times = get_report_data_res.get("retry_times", None)
 
         '''
 
             1. 如过该接口返回的数据中包含特殊值，比如--, null, 空，请在此处转换成接口文档中的默认值
             2. 清洗完数据之后，到此返回数据即可，数据可以缓存在csv文件中。
         '''
-        report_data = pd.read_json(json.dumps(data))
-        tdf = df[['推广计划ID','关键词ID', '账户ID', '推广计划', '推广单元', '账户']]
-        tdf.rename(columns={'关键词ID':'keywordId'}, inplace = True)
-        report_data = pd.merge(report_data, tdf, on='keywordId')
         fres = ReportBase.convert_sem_data_to_pt(report_data, self.f_source, self.f_company_id, self.f_email, fmap, self.f_account)
-        fres.to_csv("csv/keyword_info_report.csv")
+        fres.to_csv("csv/region.csv")
         return 2000, "OK"

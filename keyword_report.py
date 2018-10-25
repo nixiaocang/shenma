@@ -5,6 +5,7 @@ import time
 import datetime
 from _sem_service import ShenMaSemService
 from _report_base import ReportBase
+import pandas as pd
 import traceback
 
 logger = logging.getLogger()
@@ -17,19 +18,22 @@ fmap = {
         "f_source": "f_source",
         "f_company_id": "f_company_id",
         "f_email": "f_email",
-        "f_account": "f_account",
-        "f_account_id": "f_account_id",
-        '时间': "f_date",
+        "时间": "f_date",
+        "账户": "f_account",
         "推广计划": "f_campaign",
-        "推广单元": "f_campaign_group",
+        "推广单元": "f_set",
         "关键词": "f_keyword",
         "消费": "f_cost",
+        "平均点击价格": "f_cpc_avg_price",
         "展现量": "f_impression_count",
         "点击量": "f_click_count",
+        "点击率": "f_cpc_rate",
         "平均排名": "f_keyword_avg_billing",
+        "设备": "f_device",
         "关键词ID": "f_keyword_id",
+        "账户ID": "f_account_id",
         "推广计划ID": "f_campaign_id",
-        "推广单元ID": "f_company_group_id"
+        "推广单元ID": "f_set_id"
     }
 
 
@@ -110,6 +114,7 @@ class KeywordReport(ReportBase):
             1. 如过该接口返回的数据中包含特殊值，比如--, null, 空，请在此处转换成接口文档中的默认值
             2. 清洗完数据之后，到此返回数据即可，数据可以缓存在csv文件中。
         '''
+        report_data['点击率'] = pd.to_numeric(report_data['点击率'].str.split('%',expand=True)[0])/ 100
         fres = ReportBase.convert_sem_data_to_pt(report_data, self.f_source, self.f_company_id, self.f_email, fmap, self.f_account)
         fres.to_csv("csv/keyword.csv")
         return 2000, "OK"

@@ -17,19 +17,15 @@ fmap = {
         "f_source": "f_source",
         "f_company_id": "f_company_id",
         "f_email": "f_email",
-        "f_account": "f_account",
-        "f_account_id": "f_account_id",
-        '时间': "f_date",
-        "推广计划": "f_campaign",
-        "推广单元": "f_campaign_group",
-        "关键词": "f_region",
-        "消费": "f_cost",
+        "账户": "f_account",
+        "时间": "f_date",
+        "账户ID": "f_account_id",
+        "地域ID": "f_city_id",
+        "省级地域": "f_subdivition",
+        "地市级地域": "f_city",
         "展现量": "f_impression_count",
         "点击量": "f_click_count",
-        "平均排名": "f_region_avg_billing",
-        "关键词ID": "f_region_id",
-        "推广计划ID": "f_campaign_id",
-        "推广单元ID": "f_company_group_id"
+        "消费": "f_cost"
     }
 
 

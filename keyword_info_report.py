@@ -20,16 +20,19 @@ fmap = {
         "f_source": "f_source",
         "f_company_id": "f_company_id",
         "f_email": "f_email",
-        "时间": "f_date",
-        "f_account": "f_account",
-        "f_account_id": "f_account_id",
+        "date": "f_date",
+        "账户": "f_account",
+        "推广计划": "f_campaign",
+        "推广单元": "f_set",
+        "设备": "f_device",
         "keywordId": "f_keyword_id",
-        "推广计划ID": "f_campaign_id",
+        "账户ID": "f_account_id",
         "adgroupId": "f_set_id",
         "keyword": "f_keyword",
         "price": "f_keyword_offer_price",
-        "destinationUrl": "f_pc_url",
+        "destinationUrl": "f_mobile_url",
         "matchType": "f_matched_type",
+        "quality": "f_keyword_mobile_quality"
     }
 
 

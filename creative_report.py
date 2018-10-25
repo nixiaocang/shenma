@@ -17,19 +17,19 @@ fmap = {
         "f_source": "f_source",
         "f_company_id": "f_company_id",
         "f_email": "f_email",
-        "f_account": "f_account",
-        "f_account_id": "f_account_id",
-        '时间': "f_date",
+        "时间": "f_date",
+        "账户": "f_account",
+        "账户ID": "f_account_id",
         "推广计划": "f_campaign",
-        "推广单元": "f_campaign_group",
-        "关键词": "f_creative",
+        "推广计划ID": "f_campaign_id",
+        "推广单元": "f_set",
+        "推广单元ID": "f_set_id",
+        "点击量": "f_click_count",
         "消费": "f_cost",
         "展现量": "f_impression_count",
-        "点击量": "f_click_count",
-        "平均排名": "f_creative_avg_billing",
-        "关键词ID": "f_creative_id",
-        "推广计划ID": "f_campaign_id",
-        "推广单元ID": "f_company_group_id"
+        "创意ID": "f_creative_id",
+        "创意": "f_creative_title",
+        "平均点击价格": "f_cpc_avg_price"
     }
 
 

@@ -13,7 +13,7 @@ if __name__ == "__main__":
             "password":"WJ@zx902",
             "pt_email":"1234@qq.com",
             "pt_company_id":"1234abcd",
-            "pt_source":"e360",
+            "pt_source":"shenma",
             "pt_data_from_date":"2018-10-19",
             "pt_data_to_date":"2018-10-20",
             "token":"c152ac99-4323-4650-8326-4acde308399c"

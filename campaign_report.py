@@ -106,6 +106,7 @@ class CampaignReport(ReportBase):
             1. 如过该接口返回的数据中包含特殊值，比如--, null, 空，请在此处转换成接口文档中的默认值
             2. 清洗完数据之后，到此返回数据即可，数据可以缓存在csv文件中。
         '''
+        report_data['时间'] = report_data['时间'].str.split('时',expand=True)[0] + ':00:00'
         fres = ReportBase.convert_sem_data_to_pt(report_data, self.f_source, self.f_company_id, self.f_email, fmap, self.f_account)
         fres.to_csv("csv/campaign.csv")
         return 2000, "OK"

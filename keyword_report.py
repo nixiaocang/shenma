@@ -115,6 +115,10 @@ class KeywordReport(ReportBase):
             2. 清洗完数据之后，到此返回数据即可，数据可以缓存在csv文件中。
         '''
         report_data['点击率'] = pd.to_numeric(report_data['点击率'].str.split('%',expand=True)[0])/ 100
+        cols = ["消费","平均点击价格","点击率","平均排名"]
+        report_data[cols] = report_data[cols].astype(str)
+        report_data[cols] = report_data[cols].replace(['-'],['0.00'])
+        report_data[cols] = report_data[cols].apply(pd.to_numeric)
         fres = ReportBase.convert_sem_data_to_pt(report_data, self.f_source, self.f_company_id, self.f_email, fmap, self.f_account)
         fres.to_csv("csv/keyword.csv")
         return 2000, "OK"

@@ -70,6 +70,8 @@ class RegionReport(ReportBase):
                         "endDate": end_date,
                         "idOnly": False,
                         "reportType": 5,
+                        "levelOfDetails":3,
+                        "statRange":2,
                         "format": 2,
                         "unitOfTime": 5
                                     }

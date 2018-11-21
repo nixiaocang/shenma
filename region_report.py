@@ -25,7 +25,9 @@ fmap = {
         "地市级地域": "f_city",
         "展现量": "f_impression_count",
         "点击量": "f_click_count",
-        "消费": "f_cost"
+        "消费": "f_cost",
+        "推广计划": "f_campaign",
+        "推广计划ID": "f_campaign_id",
     }
 
 
